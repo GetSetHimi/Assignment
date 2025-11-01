@@ -6,21 +6,38 @@ Multi-tenant e-commerce platform with FastAPI.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
 from app.core.config import settings
-from app.core.database import engine, Base
+from app.core.database import engine, Base, connect_mongodb, close_mongodb
 from app.api.v1 import api_router
 from app.models import Vendor, User, Product, Customer, Order, OrderItem  # Import models to register them
 
-# Create all database tables
-# In production, use Alembic migrations instead
-# TODO: Set up Alembic for proper migrations
-Base.metadata.create_all(bind=engine)
-# Note: This creates tables on startup - fine for dev but use migrations in prod
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan context manager for startup and shutdown events.
+    """
+    # Startup
+    # Create all database tables
+    # In production, use Alembic migrations instead
+    # TODO: Set up Alembic for proper migrations
+    Base.metadata.create_all(bind=engine)
+    # Note: This creates tables on startup - fine for dev but use migrations in prod
+    
+    # Connect to MongoDB
+    connect_mongodb()
+    
+    yield
+    
+    # Shutdown
+    close_mongodb()
 
 app = FastAPI(
     title="Multi-Tenant E-Commerce Platform",
     description="Multi-tenant e-commerce backend with FastAPI",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 # CORS middleware

@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     # TODO: Switch to PostgreSQL in production
     # DATABASE_URL: str = "postgresql://user:pass@localhost/dbname"
     
+    # MongoDB
+    MONGODB_URL: str = ""
+    MONGODB_DB_NAME: str = "ecommerce"
+    
     # Security
     SECRET_KEY: str = "your-secret-key-change-in-production"
     # TODO: Generate random secret key in production
