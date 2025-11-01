@@ -2,7 +2,6 @@
 Database configuration.
 
 SQLAlchemy ORM setup with connection pooling.
-MongoDB setup with Motor (async driver).
 """
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
